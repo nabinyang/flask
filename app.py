@@ -33,11 +33,11 @@ api.add_namespace(survey_api)
 def index():
     return render_template('./index.html')
 
-if __name__ == "__main__":
-    # Send a ping to confirm a successful connection
-    try:
-        # client.admin.command('ping')
-        print("Pinged your deployment. You successfully connected to MongoDB!")
-    except Exception as e:
-        print(e)
-    app.run(debug=True, host='0.0.0.0', port=5000)
+# if __name__ == "__main__":
+#     # Send a ping to confirm a successful connection
+#     try:
+#         # client.admin.command('ping')
+#         print("Pinged your deployment. You successfully connected to MongoDB!")
+#     except Exception as e:
+#         print(e)
+#     app.run(debug=True, host='0.0.0.0', port=5000)
