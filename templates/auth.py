@@ -86,11 +86,11 @@ class Oauth(Resource):
 class Register(Resource):
     def post(self): 
         params = request.get_json()
-        id_ = params['id']
-        nickname = params['nickname']
-        email = params['email']
-        gender = params['gender']
-        ageRange = params['ageRange']
+        id_ = int(params['id'])
+        nickname = str(params['nickname'])
+        email = str(params['email'])
+        gender = str(params['gender'])
+        ageRange = str(params['ageRange'])
         print(id_)
         print(nickname)
         print(email)
