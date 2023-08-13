@@ -1,5 +1,5 @@
 from flask_restx import Namespace, Resource
-from flask import Flask, render_template, url_for, request, session, redirect, flash
+from flask import Flask, render_template, url_for, request, session, redirect, flash, jsonify
 from pymongo.mongo_client import MongoClient
 from flask_bcrypt import Bcrypt
 from db_config import db
@@ -85,6 +85,31 @@ class Oauth(Resource):
 @auth_api.route('/register', methods=['POST'])
 class Register(Resource):
     def post(self): 
+        #nickname = request.form['nickname']
+        nickname = str(request.args.get('nickname'))
+        id_ = int(request.args.get('id'))
+        #print(nickname)
+        #print(id_)
+        try: 
+            user = users.find_one({'id': id_})
+            #print(user)
+            if user is None: 
+                try: 
+                    users.insert_one({'id': id_, 'nickname': nickname})
+                    return jsonify({'response': 'success1'})
+                    
+                
+                except Exception as e:
+                    response = {'response': e}
+                    return jsonify(response)
+            else: 
+                response = {'response': 'success2'}
+                return jsonify(response)
+        except Exception as e:
+            response = {'response': e}
+            return jsonify(response)
+        
+        '''
         #nickname = request.form['name']
         nickname = request.args.get('nickname')
         id_ = request.args.get('id')
@@ -107,7 +132,7 @@ class Register(Resource):
         except Exception as e:
             return e
         
-
+'''
     
     
 
