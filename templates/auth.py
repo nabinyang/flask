@@ -96,17 +96,21 @@ class Register(Resource):
             if user is None: 
                 try: 
                     users.insert_one({'id': id_, 'nickname': nickname})
+                    print('success1')
                     return jsonify({'response': 'success1'})
                     
                 
                 except Exception as e:
+                    print(e)
                     response = {'response': e}
                     return jsonify(response)
             else: 
                 response = {'response': 'success2'}
+                print('success2')
                 return jsonify(response)
         except Exception as e:
             response = {'response': e}
+            print(e)
             return jsonify(response)
         
         '''
