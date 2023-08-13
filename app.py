@@ -8,7 +8,7 @@ from templates.board import board_api
 from templates.real_estate import real_estate_api
 from templates.agents import agents_api
 from templates.home_safety_rating import home_safety_rating_api 
-from templates.register_user import register_user_api
+#from templates.register_user import register_user_api
 from templates.survey import survey_api
 
 app = Flask(__name__)
