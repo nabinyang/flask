@@ -8,7 +8,7 @@ from templates.board import board_api
 from templates.real_estate import real_estate_api
 from templates.agents import agents_api
 from templates.home_safety_rating import home_safety_rating_api 
-from templates.register_user import register_user_api
+#from templates.register_user import register_user_api
 from templates.survey import survey_api
 
 app = Flask(__name__)
@@ -26,7 +26,7 @@ api.add_namespace(board_api)
 api.add_namespace(real_estate_api)
 api.add_namespace(agents_api)
 api.add_namespace(home_safety_rating_api)
-api.add_namespace(register_user_api)
+#api.add_namespace(register_user_api)
 api.add_namespace(survey_api)
 
 @app.route("/")

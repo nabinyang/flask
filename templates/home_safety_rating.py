@@ -9,7 +9,7 @@ and anomaly detection on that data.
 
 import os
 import sys
-import db_config
+from db_config import db
 from pymongo.mongo_client import MongoClient
 from flask import request
 from flask import jsonify
@@ -25,7 +25,7 @@ api = Local(service_key = "4c682d5d0c62b5c4a5d3e66d9c2c87e0")
 
 
 
-ratings = db_config.ratings
+ratings = db.ratings
 home_safety_rating_api = Namespace('home_safety_rating')
 
 @home_safety_rating_api.route('/findLocation')
@@ -215,7 +215,7 @@ class Saving(Resource):
         #return score
 
 @home_safety_rating_api.route('/findResult')
-class Saving(Resource):
+class Showing(Resource):
     """
     Rating resource for the Home Safety Rating API.
 
