@@ -215,7 +215,7 @@ class Saving(Resource):
         #return score
 
 @home_safety_rating_api.route('/findResult')
-class Saving(Resource):
+class Showing(Resource):
     """
     Rating resource for the Home Safety Rating API.
 
