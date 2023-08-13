@@ -85,15 +85,18 @@ class Oauth(Resource):
 @auth_api.route('/register')
 class Register(Resource):
     def post(self): 
-        nickname = request.form['name']
-        gender = request.form['gender']
-        age_range = request.form['age_range']
-        code = str(request.form['code'])
+        #nickname = request.form['name']
+        nickname = request.args.get('nickname')
+        id = request.args.get('id')
+        #gender = request.form['gender']
+        #age_range = request.form['age_range']
+        #code = str(request.form['code'])
         try: 
-            user = users.find({'authCode': code})
+            user = users.find({'id': id})
             if user is None: 
                 try: 
-                    user.insert_one({'nickname': nickname, 'authCode': code, 'gender': gender, 'age_range': age_range})
+                    #user.insert_one({'id': id, 'nickname': nickname, 'gender': gender, 'age_range': age_range})
+                    user.insert_one({'id': id, 'nickname': nickname})
                     return "success"
                     #session['username'] = nickname
                 except Exception as e:
