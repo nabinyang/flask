@@ -20,87 +20,90 @@ auth_api = Namespace(
 users = db.users
 
 @auth_api.route('/kakaoStart')
-def kakaoStart():
-    #url = https://kauth.kakao.com/oauth/authorize?client_id=4c682d5d0c62b5c4a5d3e66d9c2c87e0&redirect_uri=http://127.0.0.1:5000/oauth&response_type=code
-    url = 'https://kauth.kakao.com/oauth/authorize'
-    param = {
-        'client_id': '4c682d5d0c62b5c4a5d3e66d9c2c87e0',
-        'redirect_uri': 'https://port-0-flask-eu1k2lll7mdj5e.sel3.cloudtype.app/oauth',
-        'response_type': 'code'
-        }
-    response = requests.request("GET", url, data= json.dumps(param))
+class Starting(Resource):
+    def kakaoStart():
+        #url = https://kauth.kakao.com/oauth/authorize?client_id=4c682d5d0c62b5c4a5d3e66d9c2c87e0&redirect_uri=http://127.0.0.1:5000/oauth&response_type=code
+        url = 'https://kauth.kakao.com/oauth/authorize'
+        param = {
+            'client_id': '4c682d5d0c62b5c4a5d3e66d9c2c87e0',
+            'redirect_uri': 'https://port-0-flask-eu1k2lll7mdj5e.sel3.cloudtype.app/oauth',
+            'response_type': 'code'
+            }
+        response = requests.request("GET", url, data= json.dumps(param))
 
 @auth_api.route('/oauth')
-def oauth():
-    # 1.인가코드 가져오기
-    code = str(request.args.get('code'))
-    #return str(code)
-
-    # 2. access_token 받기
-    url = "https://kauth.kakao.com/oauth/token"
-    payload = "grant_type=authorization_code&client_id=4c682d5d0c62b5c4a5d3e66d9c2c87e0&redirect_uri=http://127.0.0.1:5000/oauth&code=" + str(code) +"&client_secret=rQrh7WvzTYSYMRN2hx0PWARNVdwo7KPq" 
-    headers = {
-        'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
-    }
-
-    response = requests.request("POST", url, data= payload, headers= headers)
-    #print(json.loads(response.text))
-    access_token = json.loads(((response.text).encode('utf-8')))['access_token']
-    #return access_token
+class Oauth(Resource):
+    def oauth():
+        # 1.인가코드 가져오기
+        code = str(request.args.get('code'))
+        #return str(code)
     
-    # 3. 앱과 연결 
-    url = "https://kapi.kakao.com/v1/user/signup"
-
-    headers.update({'Authorization': "Bearer " + str(access_token)})
-    response= requests.request("POST", url, headers=headers)
+        # 2. access_token 받기
+        url = "https://kauth.kakao.com/oauth/token"
+        payload = "grant_type=authorization_code&client_id=4c682d5d0c62b5c4a5d3e66d9c2c87e0&redirect_uri=http://127.0.0.1:5000/oauth&code=" + str(code) +"&client_secret=rQrh7WvzTYSYMRN2hx0PWARNVdwo7KPq" 
+        headers = {
+            'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
+        }
     
-    #return (response.text)
+        response = requests.request("POST", url, data= payload, headers= headers)
+        #print(json.loads(response.text))
+        access_token = json.loads(((response.text).encode('utf-8')))['access_token']
+        #return access_token
+        
+        # 3. 앱과 연결 
+        url = "https://kapi.kakao.com/v1/user/signup"
     
-    # 4. 사용자 정보 가져오기
-    url = "https://kapi.kakao.com/v2/user/me"
-    response = requests.request("POST", url, headers = headers)
-    json_response = json.loads(response.text)
-    return json_response
-    #return (json.loads(response.text))
-    user_id = json_response["id"]
-    connected_at = json_response["connected_at"]
-    nickname = json_response['properties']['nickname']
-    #print(str(user_id) + ", " + connected_at +", " + nickname)
-    '''
-    user = db.find({'userId': user_id})
-
-    if user is None: 
-        db.insertOne({
-            'userId': user_id,
-            'connectedAt': connected_at
-        })
+        headers.update({'Authorization': "Bearer " + str(access_token)})
+        response= requests.request("POST", url, headers=headers)
+        
+        #return (response.text)
+        
+        # 4. 사용자 정보 가져오기
+        url = "https://kapi.kakao.com/v2/user/me"
+        response = requests.request("POST", url, headers = headers)
+        json_response = json.loads(response.text)
+        return json_response
+        #return (json.loads(response.text))
+        user_id = json_response["id"]
+        connected_at = json_response["connected_at"]
+        nickname = json_response['properties']['nickname']
+        #print(str(user_id) + ", " + connected_at +", " + nickname)
+        '''
+        user = db.find({'userId': user_id})
     
-    session["userId"] = user_id
-    '''
-    #return escape(session["userId"])
+        if user is None: 
+            db.insertOne({
+                'userId': user_id,
+                'connectedAt': connected_at
+            })
+        
+        session["userId"] = user_id
+        '''
+        #return escape(session["userId"])
     
 
 @auth_api.route('/register')
-def register(): 
-    nickname = request.form['name']
-    gender = request.form['gender']
-    age_range = request.form['age_range']
-    code = str(request.form['code'])
-    try: 
-        user = users.find({'authCode': code})
-        if user is None: 
-            try: 
-                user.insert_one({'nickname': nickname, 'authCode': code, 'gender': gender, 'age_range': age_range})
-                return "success"
+class Register(Resource):
+    def register(): 
+        nickname = request.form['name']
+        gender = request.form['gender']
+        age_range = request.form['age_range']
+        code = str(request.form['code'])
+        try: 
+            user = users.find({'authCode': code})
+            if user is None: 
+                try: 
+                    user.insert_one({'nickname': nickname, 'authCode': code, 'gender': gender, 'age_range': age_range})
+                    return "success"
+                    #session['username'] = nickname
+                except Exception as e:
+                    return e
+            else: 
                 #session['username'] = nickname
-            except Exception as e:
-                return e
-        else: 
-            #session['username'] = nickname
-            return '이미 있는 사용자'
-    except Exception as e:
-        return e
-    
+                return '이미 있는 사용자'
+        except Exception as e:
+            return e
+        
 
     
     
