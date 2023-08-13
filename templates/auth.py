@@ -21,7 +21,7 @@ users = db.users
 
 @auth_api.route('/kakaoStart')
 class Starting(Resource):
-    def kakaoStart():
+    def get(self):
         #url = https://kauth.kakao.com/oauth/authorize?client_id=4c682d5d0c62b5c4a5d3e66d9c2c87e0&redirect_uri=http://127.0.0.1:5000/oauth&response_type=code
         url = 'https://kauth.kakao.com/oauth/authorize'
         param = {
@@ -33,7 +33,7 @@ class Starting(Resource):
 
 @auth_api.route('/oauth')
 class Oauth(Resource):
-    def oauth():
+    def post(self):
         # 1.인가코드 가져오기
         code = str(request.args.get('code'))
         #return str(code)
@@ -84,7 +84,7 @@ class Oauth(Resource):
 
 @auth_api.route('/register')
 class Register(Resource):
-    def register(): 
+    def post(self): 
         nickname = request.form['name']
         gender = request.form['gender']
         age_range = request.form['age_range']
