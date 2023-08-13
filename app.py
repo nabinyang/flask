@@ -26,7 +26,7 @@ api.add_namespace(board_api)
 api.add_namespace(real_estate_api)
 api.add_namespace(agents_api)
 api.add_namespace(home_safety_rating_api)
-api.add_namespace(register_user_api)
+#api.add_namespace(register_user_api)
 api.add_namespace(survey_api)
 
 @app.route("/")
