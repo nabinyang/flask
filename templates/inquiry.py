@@ -9,10 +9,10 @@ and anomaly detection on that data.
 from flask_restx import Namespace, Resource
 from flask import request
 from flask import jsonify
-import db_config
+from db_config import db
 from pymongo.mongo_client import MongoClient
 
-inquiry = db_config.inquiry
+inquiry = db.inquiry
 
 
 inquiry_api = Namespace(
