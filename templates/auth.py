@@ -22,7 +22,7 @@ users = db.users
 @auth_api.route('/kakaoStart', methods=['GET', 'POST'])
 class Starting(Resource):
     def get(self):
-        #url = https://kauth.kakao.com/oauth/authorize?client_id=4c682d5d0c62b5c4a5d3e66d9c2c87e0&redirect_uri=https://port-0-flask-ac2nll8rz1xn.sel3.cloudtype.app/oauth&response_type=code
+        url = https://kauth.kakao.com/oauth/authorize?client_id=4c682d5d0c62b5c4a5d3e66d9c2c87e0&redirect_uri=https://port-0-flask-ac2nll8rz1xn.sel3.cloudtype.app/oauth&response_type=code
         #url = 'https://kauth.kakao.com/oauth/authorize'
         #param = {
         #    'client_id': '4c682d5d0c62b5c4a5d3e66d9c2c87e0',
