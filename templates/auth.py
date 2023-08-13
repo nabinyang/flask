@@ -2,7 +2,7 @@ from flask_restx import Namespace, Resource
 from flask import Flask, render_template, url_for, request, session, redirect, flash
 from pymongo.mongo_client import MongoClient
 from flask_bcrypt import Bcrypt
-import db_config 
+from db_config import db
 import requests
 import json
 #app.secret_key = "ghalghal2323"
@@ -17,7 +17,7 @@ auth_api = Namespace(
 
 #client = MongoClient(f'mongodb://{USER_NAME}:{PASSWORD}@43.202.53.29', 27017, tlsInsecure= True)
 #db = client.homey
-users = db_config.users
+users = db.users
 
 @auth_api.route('/kakaoStart')
 def kakaoStart():
