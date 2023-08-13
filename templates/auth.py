@@ -31,7 +31,7 @@ class Starting(Resource):
             }
         response = requests.request("GET", url, data= json.dumps(param))
 
-@auth_api.route('/oauth', methods=['GET'])
+@auth_api.route('/oauth', methods=['POST'])
 class Oauth(Resource):
     def post(self):
         # 1.인가코드 가져오기
