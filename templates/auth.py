@@ -19,7 +19,7 @@ auth_api = Namespace(
 #db = client.homey
 users = db.users
 
-@auth_api.route('/kakaoStart')
+@auth_api.route('/kakaoStart', methods=['GET', 'POST'])
 class Starting(Resource):
     def get(self):
         #url = https://kauth.kakao.com/oauth/authorize?client_id=4c682d5d0c62b5c4a5d3e66d9c2c87e0&redirect_uri=https://port-0-flask-ac2nll8rz1xn.sel3.cloudtype.app/oauth&response_type=code
@@ -31,7 +31,7 @@ class Starting(Resource):
         #    }
         response = requests.request("GET", url, data= json.dumps(param))
 
-@auth_api.route('/oauth')
+@auth_api.route('/oauth', methods=['GET', 'POST'])
 class Oauth(Resource):
     def post(self):
         # 1.인가코드 가져오기
@@ -82,7 +82,7 @@ class Oauth(Resource):
         #return escape(session["userId"])
     
 
-@auth_api.route('/register')
+@auth_api.route('/register', methods=['GET', 'POST'])
 class Register(Resource):
     def post(self): 
         #nickname = request.form['name']
