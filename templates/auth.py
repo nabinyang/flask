@@ -87,16 +87,16 @@ class Register(Resource):
     def post(self): 
         #nickname = request.form['name']
         nickname = request.args.get('nickname')
-        id = request.args.get('id')
+        id_ = request.args.get('id')
         #gender = request.form['gender']
         #age_range = request.form['age_range']
         #code = str(request.form['code'])
         try: 
-            user = users.find({'id': id})
+            user = users.find({'id': id_})
             if user is None: 
                 try: 
-                    #user.insert_one({'id': id, 'nickname': nickname, 'gender': gender, 'age_range': age_range})
-                    user.insert_one({'id': id, 'nickname': nickname})
+                    #user.insert_one({'id': id_, 'nickname': nickname, 'gender': gender, 'age_range': age_range})
+                    user.insert_one({'id': id_, 'nickname': nickname})
                     return "success"
                     #session['username'] = nickname
                 except Exception as e:
