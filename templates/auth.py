@@ -94,7 +94,7 @@ class Register(Resource):
         print(id_)
         print(nickname)
         print(email)
-        prin6(gender)
+        print(gender)
         print(ageRange)
         #nickname = request.form['nickname']
         #nickname = str(request.args.get('nickname'))
