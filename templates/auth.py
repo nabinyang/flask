@@ -1,5 +1,5 @@
 from flask_restx import Namespace, Resource
-from flask import Flask, render_template, url_for, request, session, redirect, flash
+from flask import Flask, render_template, url_for, request, session, redirect, flash, jsonify
 from pymongo.mongo_client import MongoClient
 from flask_bcrypt import Bcrypt
 from db_config import db
@@ -19,19 +19,19 @@ auth_api = Namespace(
 #db = client.homey
 users = db.users
 
-@auth_api.route('/kakaoStart')
+@auth_api.route('/kakaoStart', methods=['GET'])
 class Starting(Resource):
     def get(self):
         #url = https://kauth.kakao.com/oauth/authorize?client_id=4c682d5d0c62b5c4a5d3e66d9c2c87e0&redirect_uri=https://port-0-flask-ac2nll8rz1xn.sel3.cloudtype.app/oauth&response_type=code
-        #url = 'https://kauth.kakao.com/oauth/authorize'
-        #param = {
-        #    'client_id': '4c682d5d0c62b5c4a5d3e66d9c2c87e0',
-        #    'redirect_uri': 'https://port-0-flask-ac2nll8rz1xn.sel3.cloudtype.app/oauth',
-        #    'response_type': 'code'
-        #    }
+        url = 'https://kauth.kakao.com/oauth/authorize'
+        param = {
+            'client_id': '4c682d5d0c62b5c4a5d3e66d9c2c87e0',
+            'redirect_uri': 'https://port-0-flask-ac2nll8rz1xn.sel3.cloudtype.app/oauth',
+            'response_type': 'code'
+            }
         response = requests.request("GET", url, data= json.dumps(param))
 
-@auth_api.route('/oauth')
+@auth_api.route('/oauth', methods=['POST'])
 class Oauth(Resource):
     def post(self):
         # 1.인가코드 가져오기
@@ -82,18 +82,50 @@ class Oauth(Resource):
         #return escape(session["userId"])
     
 
-@auth_api.route('/register')
+@auth_api.route('/register', methods=['POST'])
 class Register(Resource):
     def post(self): 
-        nickname = request.form['name']
-        gender = request.form['gender']
-        age_range = request.form['age_range']
-        code = str(request.form['code'])
+        #nickname = request.form['nickname']
+        nickname = str(request.args.get('nickname'))
+        id_ = int(request.args.get('id'))
+        #print(nickname)
+        #print(id_)
         try: 
-            user = users.find({'authCode': code})
+            user = users.find_one({'id': id_})
+            #print(user)
             if user is None: 
                 try: 
-                    user.insert_one({'nickname': nickname, 'authCode': code, 'gender': gender, 'age_range': age_range})
+                    users.insert_one({'id': id_, 'nickname': nickname})
+                    print('success1')
+                    return jsonify({'response': 'success1'})
+                    
+                
+                except Exception as e:
+                    print(e)
+                    response = {'response': e}
+                    return jsonify(response)
+            else: 
+                response = {'response': 'success2'}
+                print('success2')
+                return jsonify(response)
+        except Exception as e:
+            response = {'response': e}
+            print(e)
+            return jsonify(response)
+        
+        '''
+        #nickname = request.form['name']
+        nickname = request.args.get('nickname')
+        id_ = request.args.get('id')
+        #gender = request.form['gender']
+        #age_range = request.form['age_range']
+        #code = str(request.form['code'])
+        try: 
+            user = users.find({'id': id_})
+            if user is None: 
+                try: 
+                    #user.insert_one({'id': id_, 'nickname': nickname, 'gender': gender, 'age_range': age_range})
+                    user.insert_one({'id': id_, 'nickname': nickname})
                     return "success"
                     #session['username'] = nickname
                 except Exception as e:
@@ -104,7 +136,7 @@ class Register(Resource):
         except Exception as e:
             return e
         
-
+'''
     
     
 
