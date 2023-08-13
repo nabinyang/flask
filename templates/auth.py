@@ -85,9 +85,20 @@ class Oauth(Resource):
 @auth_api.route('/register', methods=['POST'])
 class Register(Resource):
     def post(self): 
+        params = request.get_json()
+        id_ = params['id']
+        nickname = params['nickname']
+        email = params['email']
+        gender = params['gender']
+        ageRange = params['ageRange']
+        print(id_)
+        print(nickname)
+        print(email)
+        pring(gender)
+        print(ageRange)
         #nickname = request.form['nickname']
-        nickname = str(request.args.get('nickname'))
-        id_ = int(request.args.get('id'))
+        #nickname = str(request.args.get('nickname'))
+        #id_ = int(request.args.get('id'))
         #print(nickname)
         #print(id_)
         try: 
@@ -95,7 +106,8 @@ class Register(Resource):
             #print(user)
             if user is None: 
                 try: 
-                    users.insert_one({'id': id_, 'nickname': nickname})
+                    #users.insert_one({'id': id_, 'nickname': nickname})
+                    users.insert_one({'id': id_, 'nickname': nickname, 'email': email, 'gender': gender, 'ageRange': ageRange})
                     print('success1')
                     return jsonify({'response': 'success1'})
                     
