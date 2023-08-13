@@ -25,7 +25,7 @@ def kakaoStart():
     url = 'https://kauth.kakao.com/oauth/authorize'
     param = {
         'client_id': '4c682d5d0c62b5c4a5d3e66d9c2c87e0',
-        'redirect_uri': 'http://127.0.0.1:5000/oauth',
+        'redirect_uri': 'https://port-0-flask-eu1k2lll7mdj5e.sel3.cloudtype.app/oauth',
         'response_type': 'code'
         }
     response = requests.request("GET", url, data= json.dumps(param))
