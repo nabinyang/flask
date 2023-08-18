@@ -110,23 +110,23 @@ class Register(Resource):
                     users.insert_one({'id': id_, 'nickname': nickname, 'email': email, 'gender': gender, 'ageRange': ageRange})
                     #print('success1')
                     #return jsonify({'response': 'success1'})
-                    return success
+                    return "success"
                 
                 except Exception as e:
                     print(e)
                     response = {'response': e}
                     #return jsonify(response)
-                    return e
+                    return "오류"
             else: 
                 #response = {'response': 'success2'}
                 #print('success2')
                 #return jsonify(response)
-                return success
+                return "success"
         except Exception as e:
             #response = {'response': e}
             #print(e)
             #return jsonify(response)
-            return e
+            return "오류"
         '''
         #nickname = request.form['name']
         nickname = request.args.get('nickname')
