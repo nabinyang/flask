@@ -101,8 +101,8 @@ class ShowingHomeSurvey(Resource):
                 result['safety'] = survey['safety']
                 result['another'] = survey['another']
                 result['isSafety'] = survey['isSafety']
-                result['reason'] = survey(params['reason']
-                result['yesOrNo'] = survey(params['yesOrNo']
+                result['reason'] = survey['reason']
+                result['yesOrNo'] = survey['yesOrNo']
                 return result
         except Exception as e:
             
