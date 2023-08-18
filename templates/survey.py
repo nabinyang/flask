@@ -28,7 +28,6 @@ survey_api = Namespace(
 class SavingHomeSurvey(Resource):
     def post(self):
         params = request.get_json()
-        #return params
         result = {}
         result['id'] = int(params['id'])
         result['address'] = str(params['address'])
@@ -36,8 +35,6 @@ class SavingHomeSurvey(Resource):
         result['toiletNumber'] = str(params['toiletNumber'])
         result['floorNumber'] = str(params['floorNumber'])
         result['facility'] = list(params['facility'])
-        #result['safeLevel'] = int(params['saveLevel'])
-        #result['noSafetyReason'] = list(params['noSafetyReason'])
         result['standard'] = list(params['standard'])
         result['prefer1'] = str(params['prefer1'])
         result['prefer2'] = str(params['prefer2'])
@@ -49,10 +46,11 @@ class SavingHomeSurvey(Resource):
         result['reason'] = str(params['reason'])
         result['yesOrNo'] = list(params['yesOrNo'])
         #return result
+
         
         try:
             survey = homeSurveys.find_one({'id': result['id']})
-            #print(user)
+            
             if survey is None: 
                 try:
                     homeSurveys.insert_one(result)
@@ -69,7 +67,7 @@ class SavingHomeSurvey(Resource):
                     return e
             else:
                 homeSurveys.update_one({"id": result['id']},  { "$set": result })
-                return '업데이트'
+                return "success"
         except Exception as e:
             
             return e
@@ -92,8 +90,6 @@ class ShowingHomeSurvey(Resource):
                 result['toiletNumber'] = survey['toiletNumber']
                 result['floorNumber'] = survey['floorNumber']
                 result['facility'] = survey['facility']
-                #result['safeLevel'] = int(params['saveLevel'])
-                #result['noSafetyReason'] = list(params['noSafetyReason'])
                 result['standard'] = survey['standard']
                 result['prefer1'] = survey['prefer1']
                 result['prefer2'] = survey['prefer2']
@@ -105,6 +101,7 @@ class ShowingHomeSurvey(Resource):
                 result['reason'] = survey['reason']
                 result['yesOrNo'] = survey['yesOrNo']
                 return result
+            
         except Exception as e:
             
             return e
@@ -117,7 +114,7 @@ class SavingGeneralSurvey(Resource):
         params = request.get_json()
         result = {}
         # page 1
-        result['authCode'] = int(params['authCode'])
+        result['id'] = int(params['id'])
         result['safeLevel'] = int(params['safeLevel'])
         result['CP'] = int(params['CP'])
         result['location'] = int(params['location'])
@@ -143,6 +140,7 @@ class SavingGeneralSurvey(Resource):
         except Exception as e:
             
             return e
+        
 @survey_api.route('/showGeneralSurvey')
 class ShowingGeneralSurvey(Resource):
     def get(self):
@@ -154,7 +152,7 @@ class ShowingGeneralSurvey(Resource):
             else:
                 result = {}
                 # page 1
-                result['authCode'] = survey['authCode']
+                result['id'] = survey['id']
                 result['safeLevel'] = survey['safeLevel']
                 result['CP'] = survey['CP']
                 result['location'] = survey['location']

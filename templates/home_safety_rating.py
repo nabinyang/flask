@@ -15,7 +15,7 @@ from flask import request
 from flask import jsonify
 from flask_restx import Namespace, Resource
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
-from dataloader.dataloader import count_place, score_with_weights, count_places, relative_rating  # Update the import statement
+from dataloader.dataloader import count_place, score_with_weights, relative_rating  # Update the import statement
 import numpy as np
 from urllib import parse
 from PyKakao import Local
@@ -199,7 +199,7 @@ class Scoring(Resource):
         return score
 
 
-@home_safety_rating_api.route('/ratingresult')
+@home_safety_rating_api.route('/showResult')
 class RelativeRating(Resource):
     """
     Rating resource for the Home Safety Rating API.
@@ -218,8 +218,6 @@ class RelativeRating(Resource):
         Returns:
         A JSON object containing the safety rating.
         """
-
-
         # Get latitude and longitude from the query parameters
         
         req = request.get_json()
@@ -250,14 +248,13 @@ class RelativeRating(Resource):
         add_info['longitude'] = float(row['longitude'])
         add_info['address'] = row['address']
         result.update(add_info)
-        #print(result)
+        #print(f'result: {result}')
         score = score_with_weights(result)
 
-        #print(score)
+        #print(f'result: {result}')
         score.update(add_info)
-        print(score)
-        counts = count_places(result)
-        print(counts)
+        #print(f'score: {score}')
+         
         relative_ratings = relative_rating(score['location score'], score['facility score'], score['support score'], score['total score'])
         rel_result = {}
         rel_result['address'] = row['address']
@@ -266,16 +263,17 @@ class RelativeRating(Resource):
         rel_result['location_percent'] = relative_ratings['loc_percent']
         rel_result['facility_percent']= relative_ratings['fac_percent']
         rel_result['support_percent']= relative_ratings['sup_percent']
-        #rel_result['no_of_polices'] = counts['noOfPoliceOffices']
-        #rel_result['no_of_safetyCenters'] = counts['noOfSafetyCenters']
-        #rel_result['no_of_ansimees'] = counts['noOfBusStops']
-        #rel_result['no_of_busStops'] = counts['noOfWomenProtectiveCcenters']
+        rel_result['no_of_polices'] = result["counts"]['police_office_v1.csv']
+        rel_result['no_of_safetyCenters'] = result["counts"]['safety_center_v2.csv']
+        rel_result['no_of_ansimees'] = result["counts"]['women_protective_house_v1.csv']
+        rel_result['no_of_busStops'] = result["counts"]['bus_stop_v1.csv']
+        rel_result['list_of_polices'] = result["list"]['police_office_v1.csv']
+        rel_result['list_of_safetyCenters'] = result["list"]['safety_center_v2.csv']
+        rel_result['list_of_ansimees'] = result["list"]['women_protective_house_v1.csv']
+        rel_result['list_of_busStops'] = result["list"]['bus_stop_v1.csv']
         
-        #print(final_json)
-        # Calculate the rating
-        #counts = list(result.values())
-        #rating = sum(counts) / len(counts) if counts else 0
         return rel_result
+    
 @home_safety_rating_api.route('/saveRating')
 class Saving(Resource):
     """

@@ -63,7 +63,7 @@ def count_place(latitude, longitude, radius=1,
         "emergency_bell_v1.csv",
         "entertainment_establishments_v1.csv", 
         "police_office_v1.csv",
-        "safety_center_v1.csv", 
+        "safety_center_v2.csv", 
         "street_lamp_v1.csv", 
         "women_protective_house_v1.csv",
         "women_protective_parcel_v1.csv",
@@ -86,6 +86,7 @@ def count_place(latitude, longitude, radius=1,
     # List of filenames
     base_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'assets\datasets\coordinate_based')
     results = {}
+    result = {"counts": {}, "list": {}}
     # Iterate over each file
     for file in files:
         # Join the base directory path and file name
@@ -102,9 +103,16 @@ def count_place(latitude, longitude, radius=1,
 
         # Count the number of points within the radius
         count = int((distances <= radius).sum())
-        
+        result_df= df.loc[distances <= radius, ['latitude', 'longitude']].values.tolist()
+        #print(f'result_df: {result_df}')
         results[file] = count
-    return results
+        result["counts"][file] = count
+        result["list"][file] = result_df
+        #result['counts']= {file: count}
+        #result['list'] = {file: result_df}
+    #print(f'results: {results}')
+    #print(f'result: {result}')
+    return result
 
 
 def score_with_weights(results):
@@ -115,21 +123,21 @@ def score_with_weights(results):
     facility_score = 0
     support_score = 0
 
-    location_score += results['entertainment_establishments_v1.csv'] * (-30)
-    location_score += results['police_office_v1.csv'] * 80
-    location_score += results['safety_center_v1.csv'] * 80
-    location_score += results['street_lamp_v1.csv'] * 20
-    location_score += results['bus_stop_v1.csv'] * 50
+    location_score += results["counts"]['entertainment_establishments_v1.csv'] * (-30)
+    location_score += results["counts"]['police_office_v1.csv'] * 80
+    location_score += results["counts"]['safety_center_v2.csv'] * 80
+    location_score += results["counts"]['street_lamp_v1.csv'] * 20
+    location_score += results["counts"]['bus_stop_v1.csv'] * 50
     
     facility_score += results['doorLock'] * 130
     facility_score += results['keypad'] * 100
     facility_score += results['frontCCTV'] * 100
     facility_score += results['deliveryBox']  * 50
 
-    support_score += results['ansimee_cctv_v1.csv'] * 5 
-    support_score += results['emergency_bell_v1.csv'] * 30
-    support_score += results['women_protective_house_v1.csv'] * 60
-    support_score += results['women_protective_parcel_v1.csv'] * 30
+    support_score += results["counts"]['ansimee_cctv_v1.csv'] * 5 
+    support_score += results["counts"]['emergency_bell_v1.csv'] * 30
+    support_score += results["counts"]['women_protective_house_v1.csv'] * 60
+    support_score += results["counts"]['women_protective_parcel_v1.csv'] * 30
     
     score_result['location score'] = location_score
     score_result['facility score'] = facility_score
@@ -138,22 +146,6 @@ def score_with_weights(results):
     
     return score_result
 
-def count_places(results):
-    
-    score_result = {}
-
-    location_score = 0
-    facility_score = 0
-    support_score = 0
-
-    counts = {}
-    counts['noOfPoliceOffices'] = results['police_office_v1.csv']
-    counts['noOfSafetyCenters'] = results['safety_center_v1.csv'] 
-    counts['noOfBusStops'] = results['bus_stop_v1.csv']
-    counts['noOfWomenProtectiveCcenters'] = results['women_protective_house_v1.csv']
-
-    
-    return score_result
 
 def percentile_rank(scores, target_score):
     sorted_scores = sorted(scores, reverse=True)
