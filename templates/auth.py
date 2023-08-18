@@ -110,7 +110,7 @@ class Register(Resource):
                     users.insert_one({'id': id_, 'nickname': nickname, 'email': email, 'gender': gender, 'ageRange': ageRange})
                     #print('success1')
                     #return jsonify({'response': 'success1'})
-                    return 'success'
+                    return success
                 
                 except Exception as e:
                     print(e)
@@ -121,7 +121,7 @@ class Register(Resource):
                 #response = {'response': 'success2'}
                 #print('success2')
                 #return jsonify(response)
-                return 'success'
+                return success
         except Exception as e:
             #response = {'response': e}
             #print(e)
