@@ -1,5 +1,5 @@
 from flask_restx import Namespace, Resource
-from flask import Flask, render_template, url_for, request, session, redirect, flash, jsonify, Response
+from flask import Flask, render_template, url_for, request, session, redirect, flash, jsonify
 from pymongo.mongo_client import MongoClient
 from flask_bcrypt import Bcrypt
 from db_config import db
@@ -108,26 +108,25 @@ class Register(Resource):
                 try: 
                     #users.insert_one({'id': id_, 'nickname': nickname})
                     users.insert_one({'id': id_, 'nickname': nickname, 'email': email, 'gender': gender, 'ageRange': ageRange})
-                    print('success1')
+                    #print('success1')
+                    #return jsonify({'response': 'success1'})
                     return "success"
-                    return jsonify({'response': 'success1'})
-                    
                 
                 except Exception as e:
                     print(e)
                     response = {'response': e}
-                    return jsonify(response)
+                    #return jsonify(response)
+                    return "오류"
             else: 
-                response = {'response': 'success2'}
-                print('success2')
+                #response = {'response': 'success2'}
+                #print('success2')
+                #return jsonify(response)
                 return "success"
-                return jsonify(response)
         except Exception as e:
-            response = {'response': e}
-            print(e)
-            return jsonify(response)
-            
-        
+            #response = {'response': e}
+            #print(e)
+            #return jsonify(response)
+            return "오류"
         '''
         #nickname = request.form['name']
         nickname = request.args.get('nickname')

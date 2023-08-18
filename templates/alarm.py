@@ -34,9 +34,8 @@ class Saving(Resource):
             if result is None:
                 return 'No result'
             else: 
-                #print('yes')
-                #print(result)
-                #return result['homeSurveyAlarm']
+
+                
                 return result['alarm']
         except Exception as e: 
             return e

@@ -11,7 +11,7 @@ from templates.home_safety_rating import home_safety_rating_api
 from templates.alarm import alarm_api
 #from templates.register_user import register_user_api
 from templates.survey import survey_api
-
+from templates.alarm import alarm_api
 app = Flask(__name__)
 api = Api(
     app,
