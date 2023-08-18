@@ -18,7 +18,7 @@ alarm = db.alarm
 
 
 survey_api = Namespace(
-    name='Survey',
+    name='Alarm',
     description='API for saving survey results'
 )
 
