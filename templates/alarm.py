@@ -26,10 +26,9 @@ survey_api = Namespace(
 @survey_api.route('/showAlarm')
 class Saving(Resource):
     def get(self):
-        authCode = request.form['authCode']
-
+        params = request.get_json() 
         try: 
-            result = alarm.find({'authCode':authCode})
+            result = alarm.find({'id':int(params['id'])})
             if result is None:
                 return 'No result'
             else: 
