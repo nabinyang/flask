@@ -8,6 +8,7 @@ from templates.board import board_api
 from templates.real_estate import real_estate_api
 from templates.agents import agents_api
 from templates.home_safety_rating import home_safety_rating_api 
+from templates.alarm import alarm_api
 #from templates.register_user import register_user_api
 from templates.survey import survey_api
 
@@ -28,7 +29,7 @@ api.add_namespace(agents_api)
 api.add_namespace(home_safety_rating_api)
 #api.add_namespace(register_user_api)
 api.add_namespace(survey_api)
-
+api.add_namespace(alarm_api)
 @app.route("/")
 def index():
     return render_template('./index.html')

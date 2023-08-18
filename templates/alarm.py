@@ -17,70 +17,26 @@ from pymongo.mongo_client import MongoClient
 alarm = db.alarm
 
 
-survey_api = Namespace(
-    name='Survey',
+alarm_api = Namespace(
+    name='alarm',
     description='API for saving survey results'
 )
 
 
-@survey_api.route('/showAlarm')
+@alarm_api.route('/showAlarm')
 class Saving(Resource):
-    def get(self):
-        authCode = request.form['authCode']
-
+    def post(self):
+        #id = request.form['id']
+        params = request.get_json()
+        #homeSurveys.find_one({'id': int(params['id'])})
         try: 
-            result = alarm.find({'authCode':authCode})
+            result = alarm.find_one({'id':int(params['id'])})
             if result is None:
                 return 'No result'
             else: 
-                return result
+                #print('yes')
+                #print(result)
+                #return result['homeSurveyAlarm']
+                return result['alarm']
         except Exception as e: 
-            return e
-
-        try:
-            homeSurveys.insert_one(jsonify(result))
-            alarm_list = {}
-            alarm['authCode'] = str(request.form['authCode'])
-            alarm['homeSurveyAlarm'] = '설문결과완료'
-            try: 
-                alarm.insert_one(alarm_list)
-                return "success"
-            except Exception as e:
-                return e
-            
-        except Exception as e:
-            
-            return e
-        
-
-@survey_api.route('/saveGeneralSurvey')
-class Saving(Resource):
-    def post(self):
-        result = {}
-        # page 1
-        result['authCode'] = int(request.form['authCode'])
-        result['safeLevel'] = int(request.form['safeLevel'])
-        result['CP'] = int(request.form['CP'])
-        result['location'] = int(request.form['location'])
-        result['neighbors'] = int(request.form['neighbors'])
-        result['ambience'] = int(request.form['ambience'])
-        result['facility'] = list(request.form['facility'])
-        result['ent'] = int(request.form['ent'])
-        result['accident'] = list(request.form['accident'])
-        result['reason'] = str(request.form['reason'])
-        #page2
-        result['importance'] = list(request.form['importance'])
-        result['floor'] = int(request.form['floor'])
-        result['road'] = int(request.form['road'])
-        result['size'] = int(request.form['size'])
-        result['new'] = int(request.form['new'])
-        result['safeFacility'] = list(request.form['safeFacility'])
-        result['extraSafeFacility'] = str(request.form['extraSafeFacility'])
-        try: 
-           
-           homeSurveys.insert_one(jsonify(result))
-
-           return "success"
-        except Exception as e:
-            
             return e
