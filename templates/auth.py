@@ -108,23 +108,25 @@ class Register(Resource):
                 try: 
                     #users.insert_one({'id': id_, 'nickname': nickname})
                     users.insert_one({'id': id_, 'nickname': nickname, 'email': email, 'gender': gender, 'ageRange': ageRange})
-                    print('success1')
-                    return jsonify({'response': 'success1'})
-                    
+                    #print('success1')
+                    #return jsonify({'response': 'success1'})
+                    return 'success'
                 
                 except Exception as e:
                     print(e)
                     response = {'response': e}
-                    return jsonify(response)
+                    #return jsonify(response)
+                    return e
             else: 
-                response = {'response': 'success2'}
-                print('success2')
-                return jsonify(response)
+                #response = {'response': 'success2'}
+                #print('success2')
+                #return jsonify(response)
+                return 'success'
         except Exception as e:
-            response = {'response': e}
-            print(e)
-            return jsonify(response)
-        
+            #response = {'response': e}
+            #print(e)
+            #return jsonify(response)
+            return e
         '''
         #nickname = request.form['name']
         nickname = request.args.get('nickname')
