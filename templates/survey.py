@@ -45,6 +45,9 @@ class SavingHomeSurvey(Resource):
         result['prefer4'] = str(params['prefer4'])
         result['safety'] = list(params['safety'])
         result['another'] = str(params['another'])
+        result['isSafety'] = str(params['isSafety'])
+        result['reason'] = str(params['reason'])
+        result['yesOrNo'] = list(params['yesOrNo'])
         #return result
         
         try:
@@ -97,6 +100,9 @@ class ShowingHomeSurvey(Resource):
                 result['prefer4'] = survey['prefer4']
                 result['safety'] = survey['safety']
                 result['another'] = survey['another']
+                result['isSafety'] = survey['isSafety']
+                result['reason'] = survey(params['reason']
+                result['yesOrNo'] = survey(params['yesOrNo']
                 return result
         except Exception as e:
             
