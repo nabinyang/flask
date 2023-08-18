@@ -37,6 +37,6 @@ class Saving(Resource):
                 print('yes')
                 print(result)
                 #return result['homeSurveyAlarm']
-                return result['homeSurveyAlarm']
+                return return result['alarm']
         except Exception as e: 
             return e
