@@ -25,7 +25,7 @@ alarm_api = Namespace(
 
 @alarm_api.route('/showAlarm')
 class Saving(Resource):
-    def get(self):
+    def post(self):
         #id = request.form['id']
         params = request.get_json()
         #homeSurveys.find_one({'id': int(params['id'])})
