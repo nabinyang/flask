@@ -24,13 +24,14 @@ inquiry_api = Namespace(
 @inquiry_api.route('/saveInquiry')
 class Saving(Resource):
     def post(self):
+        params = request.get_json()
         result = {}
-        result['authCode'] = str(request.form['authCode'])
-        result['inquiry_message'] = str(request.form['inquiry_message'])
+        result['id'] = str(params['id'])
+        result['inquiry_message'] = str(params['inquiry_message'])
 
         try: 
            
-           inquiry.insert_one(jsonify(result))
+           inquiry.insert_one(result)
 
            return "success"
         

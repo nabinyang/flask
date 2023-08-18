@@ -15,7 +15,7 @@ from flask import request
 from flask import jsonify
 from flask_restx import Namespace, Resource
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
-from dataloader.dataloader import count_place, score_with_weights  # Update the import statement
+from dataloader.dataloader import count_place, score_with_weights, count_places, relative_rating  # Update the import statement
 import numpy as np
 from urllib import parse
 from PyKakao import Local
@@ -84,9 +84,10 @@ class Count(Resource):
             Returns:
             A JSON object mapping safety feature types to their respective counts.
         """
+        req = request.get_json()
         # Get latitude and longitude from the query parameters
-        latitude = float(request.args.get('latitude'))
-        longitude = float(request.args.get('longitude'))
+        latitude = float(req['latitude'])
+        longitude = float(req['latitude'])
         
         # Call the dataloader function
         result = count_place(latitude, longitude)
@@ -112,12 +113,21 @@ class Rating(Resource):
         A JSON object containing the safety rating.
         """
         # Get latitude and longitude from the query parameters
-        
-        latitude = float(request.args.get('latitude'))
-        longitude = float(request.args.get('longitude'))
+        req = request.get_json()
+        address = req['address']
+        result = api.search_address(address)
+        if result['meta']['total_count'] > 0:
+
+            row = {
+                'addr': address,
+                'longitude': result['documents'][0]['x'], 
+                'latitude': result['documents'][0]['y'], 
+            }
+        #latitude = float(req['latitude'])
+        #longitude = float(req['latitude'])
         
         # Call the dataloader function
-        result = count_place(latitude, longitude)
+        result = count_place(row['latitude'], row['longitude'])
         
         # Calculate the rating
         counts = list(result.values())
@@ -147,33 +157,125 @@ class Scoring(Resource):
 
 
         # Get latitude and longitude from the query parameters
-        addr = request.form['addr']
-        latitude = request.form['latitude']
-        longitude = request.form['longitude']
+        
+        req = request.get_json()
+        address = req['address']
+        result = api.search_address(address)
+        if result['meta']['total_count'] > 0:
+
+            row = {
+                'address': address,
+                'longitude': result['documents'][0]['x'], 
+                'latitude': result['documents'][0]['y'], 
+            }
+        #print(row['latitude'], row['longitude'])
+        #latitude = request.form['latitude']
+        #longitude = request.form['longitude']
 
         # Call the dataloader function
-        result = count_place(latitude, longitude)
+        result = count_place(float(row['latitude']), float(row['longitude']))
 
         # Add additional information to the result
         add_info = {}
 
-        add_info['doorLock'] = int(request.args.get('doorLock')) # 1 if there is a door lock else 0
-        add_info['keypad'] = int(request.args.get('keyPad')) # 1 if there is a key pad else 0
-        add_info['frontCCTV'] = int(request.args.get('frontCCTV')) # 1 if there is a cctv at the front else 0
-        add_info['deliveryBox'] = int(request.args.get('deliveryBox')) # 1 if there is a delivery box else 0
-        add_info['latitude'] = latitude,
-        add_info['longitude'] = longitude,
-        add_info['address'] = addr
+        add_info['doorLock'] = int(req['doorLock']) # 1 if there is a door lock else 0
+        add_info['keypad'] = int(req['keypad']) # 1 if there is a key pad else 0
+        add_info['frontCCTV'] = int(req['frontCCTV']) # 1 if there is a cctv at the front else 0
+        add_info['deliveryBox'] = int(req['deliveryBox']) # 1 if there is a delivery box else 0
+        add_info['latitude'] = float(row['latitude'])
+        add_info['longitude'] = float(row['longitude'])
+        add_info['address'] = row['address']
 
         result.update(add_info)
+        #print(result)
         score = score_with_weights(result)
 
-        final_json = score.update(add_info)
+        #print(score)
+        score.update(add_info)
+        #print(final_json)
         # Calculate the rating
         #counts = list(result.values())
         #rating = sum(counts) / len(counts) if counts else 0
-        return final_json
+        return score
+
+
+@home_safety_rating_api.route('/ratingresult')
+class RelativeRating(Resource):
+    """
+    Rating resource for the Home Safety Rating API.
+
+    Provides a safety rating for a specific geographical location, 
+    based on the count of various safety-related features around that location.
+    """
+    def get(self):
+        """
+        Fetch the safety rating for a specific location.
+
+        Query Parameters:
+        latitude -- the latitude of the location
+        longitude -- the longitude of the location
+
+        Returns:
+        A JSON object containing the safety rating.
+        """
+
+
+        # Get latitude and longitude from the query parameters
         
+        req = request.get_json()
+        address = req['address']
+        result = api.search_address(address)
+        if result['meta']['total_count'] > 0:
+
+            row = {
+                'address': address,
+                'longitude': result['documents'][0]['x'], 
+                'latitude': result['documents'][0]['y'], 
+            }
+        #print(row['latitude'], row['longitude'])
+        #latitude = request.form['latitude']
+        #longitude = request.form['longitude']
+
+        # Call the dataloader function
+        result = count_place(float(row['latitude']), float(row['longitude']))
+
+        # Add additional information to the result
+        add_info = {}
+
+        add_info['doorLock'] = int(req['doorLock']) # 1 if there is a door lock else 0
+        add_info['keypad'] = int(req['keypad']) # 1 if there is a key pad else 0
+        add_info['frontCCTV'] = int(req['frontCCTV']) # 1 if there is a cctv at the front else 0
+        add_info['deliveryBox'] = int(req['deliveryBox']) # 1 if there is a delivery box else 0
+        add_info['latitude'] = float(row['latitude'])
+        add_info['longitude'] = float(row['longitude'])
+        add_info['address'] = row['address']
+        result.update(add_info)
+        #print(result)
+        score = score_with_weights(result)
+
+        #print(score)
+        score.update(add_info)
+        print(score)
+        counts = count_places(result)
+        print(counts)
+        relative_ratings = relative_rating(score['location score'], score['facility score'], score['support score'], score['total score'])
+        rel_result = {}
+        rel_result['address'] = row['address']
+        rel_result['rating'] = relative_ratings['tot_grade']
+        rel_result['total_score'] = score['total score']
+        rel_result['location_percent'] = relative_ratings['loc_percent']
+        rel_result['facility_percent']= relative_ratings['fac_percent']
+        rel_result['support_percent']= relative_ratings['sup_percent']
+        #rel_result['no_of_polices'] = counts['noOfPoliceOffices']
+        #rel_result['no_of_safetyCenters'] = counts['noOfSafetyCenters']
+        #rel_result['no_of_ansimees'] = counts['noOfBusStops']
+        #rel_result['no_of_busStops'] = counts['noOfWomenProtectiveCcenters']
+        
+        #print(final_json)
+        # Calculate the rating
+        #counts = list(result.values())
+        #rating = sum(counts) / len(counts) if counts else 0
+        return rel_result
 @home_safety_rating_api.route('/saveRating')
 class Saving(Resource):
     """
