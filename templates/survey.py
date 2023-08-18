@@ -58,7 +58,8 @@ class SavingHomeSurvey(Resource):
                     homeSurveys.insert_one(result)
                     alarm_list = {}
                     alarm_list['id'] = result['id']
-                    alarm_list['homeSurveyAlarm'] = '설문결과완료'
+                    alarm_list['alarm'] = []
+                    alarm_list['alarm'].append('설문결과완료')
                     try: 
                         alarm.insert_one(alarm_list)
                         return "success"
