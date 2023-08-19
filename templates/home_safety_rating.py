@@ -207,7 +207,7 @@ class RelativeRating(Resource):
     Provides a safety rating for a specific geographical location, 
     based on the count of various safety-related features around that location.
     """
-    def get(self):
+    def post(self):
         """
         Fetch the safety rating for a specific location.
 
