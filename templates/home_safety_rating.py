@@ -207,7 +207,7 @@ class RelativeRating(Resource):
     Provides a safety rating for a specific geographical location, 
     based on the count of various safety-related features around that location.
     """
-    def get(self):
+    def post(self):
         """
         Fetch the safety rating for a specific location.
 
@@ -221,6 +221,7 @@ class RelativeRating(Resource):
         # Get latitude and longitude from the query parameters
         
         req = request.get_json()
+        id = req['id']
         address = req['address']
         result = api.search_address(address)
         if result['meta']['total_count'] > 0:
@@ -257,6 +258,7 @@ class RelativeRating(Resource):
          
         relative_ratings = relative_rating(score['location score'], score['facility score'], score['support score'], score['total score'])
         rel_result = {}
+        rel_result['id'] = id
         rel_result['address'] = row['address']
         rel_result['rating'] = relative_ratings['tot_grade']
         rel_result['total_score'] = score['total score']
@@ -272,7 +274,40 @@ class RelativeRating(Resource):
         rel_result['list_of_ansimees'] = result["list"]['women_protective_house_v1.csv']
         rel_result['list_of_busStops'] = result["list"]['bus_stop_v1.csv']
         
-        return rel_result
+        try: 
+            rating = ratings.find_one({'id': id})
+            #print(user)
+            if rating is None: 
+                try: 
+                    #ratings.insert_one({'id': id_, 'nickname': nickname})
+                    ratings.insert_one(rel_result)
+                    #print('success1')
+                    #return jsonify({'response': 'success1'})
+                    return "success"
+                
+                except Exception as e:
+                    print(e)
+                    response = {'response': e}
+                    #return jsonify(response)
+                    return "오류"
+            else: 
+                #response = {'response': 'success2'}
+                #print('success2')
+                #return jsonify(response)
+                
+                try: 
+                    ratings.update_one({"id": rel_result['id']}, { "$set": rel_result })
+                    return "success"
+                except Exception as e:
+                    print(e)
+                    return "오류"
+        except Exception as e:
+            #response = {'response': e}
+            #print(e)
+            #return jsonify(response)
+            return "오류"
+
+        #return rel_result
     
 @home_safety_rating_api.route('/saveRating')
 class Saving(Resource):
