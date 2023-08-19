@@ -116,13 +116,13 @@ class SavingGeneralSurvey(Resource):
         # page 1
         result['id'] = int(params['id'])
         result['safeLevel'] = int(params['safeLevel'])
-        result['CP'] = int(params['CP'])
+        result['preventionFacility'] = int(params['preventionFacility'])
         result['location'] = int(params['location'])
         result['neighbors'] = int(params['neighbors'])
         result['ambience'] = int(params['ambience'])
-        result['facility'] = list(params['facility'])
+        result['facility'] = int(params['facility'])
         result['ent'] = int(params['ent'])
-        result['accident'] = list(params['accident'])
+        result['accident'] = int(params['accident'])
         result['reason'] = str(params['reason'])
         #page2
         result['importance'] = list(params['importance'])
@@ -134,7 +134,7 @@ class SavingGeneralSurvey(Resource):
         result['extraSafeFacility'] = str(params['extraSafeFacility'])
         try: 
            
-           homeSurveys.insert_one(result)
+           generalSurveys.insert_one(result)
 
            return "success"
         except Exception as e:
@@ -146,7 +146,7 @@ class ShowingGeneralSurvey(Resource):
     def get(self):
         params = request.get_json()
         try:
-            survey = homeSurveys.find_one({'id': params['id']})
+            survey = generalSurveys.find_one({'id': params['id']})
             if survey is None:
                 return '저장된 결과 없음'
             else:
@@ -154,7 +154,7 @@ class ShowingGeneralSurvey(Resource):
                 # page 1
                 result['id'] = survey['id']
                 result['safeLevel'] = survey['safeLevel']
-                result['CP'] = survey['CP']
+                result['preventionFacility'] = survey['preventionFacility']
                 result['location'] = survey['location']
                 result['neighbors'] = survey['neighbors']
                 result['ambience'] = survey['ambience']
