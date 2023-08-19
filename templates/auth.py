@@ -18,7 +18,7 @@ auth_api = Namespace(
 #client = MongoClient(f'mongodb://{USER_NAME}:{PASSWORD}@43.202.53.29', 27017, tlsInsecure= True)
 #db = client.homey
 users = db.users
-
+'''
 @auth_api.route('/kakaoStart', methods=['GET'])
 class Starting(Resource):
     def get(self):
@@ -68,7 +68,7 @@ class Oauth(Resource):
         connected_at = json_response["connected_at"]
         nickname = json_response['properties']['nickname']
         #print(str(user_id) + ", " + connected_at +", " + nickname)
-        '''
+        
         user = db.find({'userId': user_id})
     
         if user is None: 
@@ -78,9 +78,9 @@ class Oauth(Resource):
             })
         
         session["userId"] = user_id
-        '''
+        
         #return escape(session["userId"])
-    
+    '''
 
 @auth_api.route('/register', methods=['POST'])
 class Register(Resource):
@@ -96,11 +96,6 @@ class Register(Resource):
         print(email)
         print(gender)
         print(ageRange)
-        #nickname = request.form['nickname']
-        #nickname = str(request.args.get('nickname'))
-        #id_ = int(request.args.get('id'))
-        #print(nickname)
-        #print(id_)
         try: 
             user = users.find_one({'id': id_})
             #print(user)
@@ -127,80 +122,6 @@ class Register(Resource):
             #print(e)
             #return jsonify(response)
             return "오류"
-        '''
-        #nickname = request.form['name']
-        nickname = request.args.get('nickname')
-        id_ = request.args.get('id')
-        #gender = request.form['gender']
-        #age_range = request.form['age_range']
-        #code = str(request.form['code'])
-        try: 
-            user = users.find({'id': id_})
-            if user is None: 
-                try: 
-                    #user.insert_one({'id': id_, 'nickname': nickname, 'gender': gender, 'age_range': age_range})
-                    user.insert_one({'id': id_, 'nickname': nickname})
-                    return "success"
-                    #session['username'] = nickname
-                except Exception as e:
-                    return e
-            else: 
-                #session['username'] = nickname
-                return '이미 있는 사용자'
-        except Exception as e:
-            return e
-        
-'''
+
     
     
-
-
-'''
-@app.route('/oauth/logout')
-def kakao_logout():
-    code = str(request.form['code'])
-
-    url = 'https://kapi.kakao.com/v1/user/logout?client_id=4c682d5d0c62b5c4a5d3e66d9c2c87e0'
-    headers = {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': "KakaoAK " + '7029bc1203cf9469db6b8521023b8aa0',
-    }
-'''
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-'''
-@login_api.route('/login', methods = ['POST', 'GET'])
-class Login(Resource):
-    def post(self):
-        # Code to handle user authentication
-        if request.method == 'POST':
-            user_id = request.form.get("id")
-            user_found = users.find_one({'id': user_id})
-
-            #signup_user = user.find_one({'id': request.form['id']})
-        
-        if user_found:
-            #message = 'Successful Login'
-            success = True
-            return success
-        pass
-
-@login_api.route('/logout')
-class Logout(Resource):
-    def post(self):
-        # Code to handle user logout
-        pass
-'''
