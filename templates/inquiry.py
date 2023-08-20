@@ -16,7 +16,7 @@ inquiry = db.inquiry
 
 
 inquiry_api = Namespace(
-    name='Inquiry',
+    name='inquiry',
     description='API for saving inquiry results'
 )
 
@@ -26,7 +26,7 @@ class Saving(Resource):
     def post(self):
         params = request.get_json()
         result = {}
-        result['id'] = str(params['id'])
+        result['id'] = int(params['id'])
         result['inquiry_message'] = str(params['inquiry_message'])
 
         try: 
