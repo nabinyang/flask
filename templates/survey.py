@@ -49,25 +49,24 @@ class SavingHomeSurvey(Resource):
 
         
         try:
-            survey = homeSurveys.find_one({'id': result['id']})
+            count = homeSurveys.count_documents({'id': result['id']})
+            print(f'count: {count}')
+            result['surveyNo'] = count + 1
             
-            if survey is None: 
-                try:
-                    homeSurveys.insert_one(result)
-                    alarm_list = {}
-                    alarm_list['id'] = result['id']
-                    alarm_list['alarm'] = []
-                    alarm_list['alarm'].append('설문결과완료')
-                    try: 
-                        alarm.insert_one(alarm_list)
-                        return "success"
-                    except Exception as e:
-                        return e
+            try:
+                homeSurveys.insert_one(result)
+                alarm_list = {}
+                alarm_list['id'] = result['id']
+                alarm_list['alarm'] = []
+                alarm_list['alarm'].append('설문결과완료')
+                try: 
+                    alarm.insert_one(alarm_list)
+                    return "success"
                 except Exception as e:
                     return e
-            else:
-                homeSurveys.update_one({"id": result['id']},  { "$set": result })
-                return "success"
+            except Exception as e:
+                return e
+            
         except Exception as e:
             
             return e
@@ -78,13 +77,14 @@ class ShowingHomeSurvey(Resource):
         params = request.get_json()
         #print(params['id'])
         try:
-            survey = homeSurveys.find_one({'id': int(params['id'])})
+            survey = homeSurveys.find_one({'id': int(params['id']), 'surveyNo': int(params['surveyNo'])})
             print(type(survey))
             if survey is None:
                 return '저장된 결과 없음'
             else:
                 result = {}
                 result['id'] = survey['id']
+                result['surveyNo'] = survey['surveyNo']
                 result['address'] = survey['address']
                 result['dwellingType'] =survey['dwellingType']
                 result['toiletNumber'] = survey['toiletNumber']
@@ -100,6 +100,7 @@ class ShowingHomeSurvey(Resource):
                 result['isSafety'] = survey['isSafety']
                 result['reason'] = survey['reason']
                 result['yesOrNo'] = survey['yesOrNo']
+
                 return result
             
         except Exception as e:
