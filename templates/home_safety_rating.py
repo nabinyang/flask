@@ -225,10 +225,7 @@ class RelativeRating(Resource):
         """
         # Get latitude and longitude from the query parameters
         params = request.get_json()
-        id_ = int(params['id'])
-        survey_no = int(params['surveyNo'])
-        #print(params)
-        #print(params['id'])
+        
         try:
             
             survey = surveys.find_one(params)

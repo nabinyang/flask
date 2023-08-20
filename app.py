@@ -12,6 +12,7 @@ from templates.alarm import alarm_api
 #from templates.register_user import register_user_api
 from templates.survey import survey_api
 from templates.alarm import alarm_api
+from templates.inquiry import inquiry_api
 app = Flask(__name__)
 api = Api(
     app,
@@ -30,6 +31,7 @@ api.add_namespace(home_safety_rating_api)
 #api.add_namespace(register_user_api)
 api.add_namespace(survey_api)
 api.add_namespace(alarm_api)
+api.add_namespace(inquiry_api)
 @app.route("/")
 def index():
     return render_template('./index.html')
