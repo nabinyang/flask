@@ -12,6 +12,7 @@ from flask import jsonify
 from db_config import db
 import json
 from bson import json_util 
+import datetime
 #from pymongo.mongo_client import MongoClient
 
 homeSurveys = db.homeSurveys
@@ -45,6 +46,7 @@ class SavingHomeSurvey(Resource):
         result['isSafety'] = str(params['isSafety'])
         result['reason'] = str(params['reason'])
         result['yesOrNo'] = list(params['yesOrNo'])
+        result['timestamp'] = datetime.datetime.now
         #return result
 
         
@@ -100,13 +102,37 @@ class ShowingHomeSurvey(Resource):
                 result['isSafety'] = survey['isSafety']
                 result['reason'] = survey['reason']
                 result['yesOrNo'] = survey['yesOrNo']
-
+                
                 return result
             
         except Exception as e:
             
             return e
         
+@survey_api.route('/showSurveyList')
+class ShowingHomeSurvey(Resource):
+    def get(self):
+        params = request.get_json()
+        #print(params['id'])
+        try:
+            surveys = homeSurveys.find({'id': int(params['id'])})
+            print(type(survey))
+            if survey is None:
+                return '저장된 결과 없음'
+            else:
+                list = []
+                for survey in surveys:
+                    result = {}
+                    result['address'] = survey['address']
+                    result['time'] = survey['timestamp']
+                    list.append(result)
+
+                return list
+            
+        except Exception as e:
+            
+            return e
+
 
 @survey_api.route('/saveGeneralSurvey')
 class SavingGeneralSurvey(Resource):
