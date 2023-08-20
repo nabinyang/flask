@@ -12,7 +12,9 @@ from flask import jsonify
 from db_config import db
 import json
 from bson import json_util 
-import datetime
+
+from datetime import datetime
+
 #from pymongo.mongo_client import MongoClient
 
 homeSurveys = db.homeSurveys
@@ -29,6 +31,8 @@ survey_api = Namespace(
 class SavingHomeSurvey(Resource):
     def post(self):
         params = request.get_json()
+        now = datetime.now()
+        #print('now: ', now.strftime("%Y/%m/%d/%H"))
         result = {}
         result['id'] = int(params['id'])
         result['address'] = str(params['address'])
@@ -46,7 +50,7 @@ class SavingHomeSurvey(Resource):
         result['isSafety'] = str(params['isSafety'])
         result['reason'] = str(params['reason'])
         result['yesOrNo'] = list(params['yesOrNo'])
-        result['timestamp'] = datetime.datetime.now
+        result['timestamp'] = now.strftime("%Y/%m/%d/%H")
         #return result
 
         
@@ -116,8 +120,10 @@ class ShowingHomeSurvey(Resource):
         #print(params['id'])
         try:
             surveys = homeSurveys.find({'id': int(params['id'])})
-            print(type(survey))
-            if survey is None:
+            print(type(surveys))
+            #for survey in surveys:
+            #    print(survey)
+            if surveys is None:
                 return '저장된 결과 없음'
             else:
                 list = []
@@ -125,6 +131,7 @@ class ShowingHomeSurvey(Resource):
                     result = {}
                     result['address'] = survey['address']
                     result['time'] = survey['timestamp']
+                    print(result)
                     list.append(result)
 
                 return list
