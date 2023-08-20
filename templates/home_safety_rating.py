@@ -307,7 +307,8 @@ class RelativeRating(Resource):
                     ratings.insert_one(rel_result)
                     #print('success1')
                     #return jsonify({'response': 'success1'})
-                    return "success"
+                    #print()
+                    return rel_result
                 
                 except Exception as e:
                     print(e)
