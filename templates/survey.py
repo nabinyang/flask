@@ -111,7 +111,7 @@ class ShowingHomeSurvey(Resource):
         
 @survey_api.route('/showSurveyList')
 class ShowingHomeSurvey(Resource):
-    def get(self):
+    def post(self):
         params = request.get_json()
         #print(params['id'])
         try:
